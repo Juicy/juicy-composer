@@ -29,7 +29,7 @@
     // Creates an object based in the HTML Element prototype
     var JuicyElementPrototype = Object.create(HTMLElement.prototype);
 
-    JuicyElementPrototype.listName = "juicy-tile-list";
+    JuicyElementPrototype.defaultTagName = "juicy-tile-list";
 
     // <V1 assignedSlot shim>
     /**
@@ -76,7 +76,7 @@
      */
     JuicyElementPrototype.stamp = function(){
         var template = document.importNode(templ, true);
-        this.shadowContainer = document.createElement(this.listName);
+        this.shadowContainer = document.createElement(this.setup.tagName || this.defaultTagName);
         //for debugginh
         this.shadowContainer.style.border = '1px solid black';
         //
@@ -141,7 +141,7 @@
 
     /**
      * Apply changes of attributes
-     * `list-name` - recreates element TBD
+     * `default-tag-name` - recreates element TBD
      * `setup` - updates shadow DOM structure TBD
      * @param  {String} attr   attribute name
      * @param  {String} oldVal old value
@@ -149,8 +149,8 @@
      */
     JuicyElementPrototype.attributeChangedCallback = function(attr, oldVal, newVal) {
         switch(attr){
-            case "list-name":
-                this.listName = newVal;
+            case "default-tag-name":
+                this.defaultTagName = newVal;
                 this.createdCallback();
                 // TODO: replace nested structure
                 break;

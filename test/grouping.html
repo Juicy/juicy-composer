@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../../webcomponentsjs/webcomponents.js"></script>
+    <script src="../../web-component-tester/browser.js"></script>
+
+    <link rel="import" href="../juicy-composer.html">
+</head>
+
+<body>
+    <test-fixture id="element">
+        <template>
+            <juicy-composer setup='{"tagName": "juicy-tile-table" }'>
+                <div>0</div>
+                <div>1</div>
+                <div>2</div>
+                <div>3</div>
+                <div>4</div>
+            </juicy-composer>
+        </template>
+    </test-fixture>
+</body>
+<script>
+    var juicyElement;
+    describe('juicy-composer', function() {
+
+        beforeEach(function() {
+            juicyElement = fixture('element');
+        });
+        it('should distribute its child nodes into shadow DOM within the HTML Element given by `tagName` in setup', function(){
+            expect(juicyElement.shadowRoot.querySelector('juicy-tile-table')).to.be.not.null;
+            // In shimmed IE it's shimm object, not an HTMLElement
+            // expect(juicyTileList).to.be.an.instanceOf(HTMLElement);
+            var shadowElement = juicyElement.shadowRoot.querySelector('juicy-tile-table');
+
+            expect(shadowElement.children.length).to.be.equal(juicyElement.children.length)
+            // shimmed slot
+            for(var childNo = 0, len = shadowElement.children.length; childNo < len; childNo++){
+                expect(shadowElement.querySelectorAll('content')[childNo].getDistributedNodes().length).to.be.equal(1);
+                expect(shadowElement.querySelectorAll('content')[childNo].getDistributedNodes()[0]).to.be.equal(juicyElement.children[childNo]);
+            }
+        });
+    });
+</script>
+
+</html>

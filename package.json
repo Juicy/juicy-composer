@@ -1,7 +1,7 @@
 {
   "name": "juicy-composer",
   "version": "0.0.0",
-  "description": "Awesome, Juicy Custom Element",
+  "description": "Custom Element that build Shadow DOM tree according to given JSON",
   "main": "juicy-composer.html",
   "directories": {
     "test": "test"

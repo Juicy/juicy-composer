@@ -1,8 +1,6 @@
 # &lt;juicy-composer&gt;
 
-> A bare minimum custom element starter-kit using [VanillaJS](http://vanilla-js.com/).
->
-> Looking for a working example? Check [hello-world-element](https://github.com/webcomponents/hello-world-element).
+> Custom Element that build Shadow DOM tree according to given JSON
 
 ## Demo
 
@@ -35,26 +33,42 @@ Or [download as ZIP](https://github.com/Juicy/juicy-composer/archive/master.zip)
 3. Start using it!
 
     ```html
-    <juicy-composer></juicy-composer>
+    <juicy-composer setup='{
+        "tagName": "my-element",
+        "items": [{
+            "id":"group",
+            "tagName": "other-element",
+            "items":[{
+                "id": 0,
+            }]
+        }]}'></juicy-composer>
+    ```
+    it will build you
+    ```html
+    <!-- juicy-composer's shadow DOM -->
+    <my-element>
+        <other-element>
+            <content select="_firstElementChild_"></content>
+        </other-element>
+        <content select="_remainingElementChildren_"></content>
+    </my-element>
     ```
 
 ## Options
 
 Attribute     | Options     | Default      | Description
 ---           | ---         | ---          | ---
-`foo`         | *string*    | `bar`        | Lorem ipsum dolor.
+`setup`       | *JSON*      | `{}`         | Setup to reflect shadow DOM structure
 
 ## Methods
 
 Method        | Parameters   | Returns     | Description
 ---           | ---          | ---         | ---
-`unicorn()`   | None.        | Nothing.    | Magic stuff appears.
 
 ## Events
 
 Event         | Description
 ---           | ---
-`onsomething` | Triggers when something happens.
 
 ## Development
 

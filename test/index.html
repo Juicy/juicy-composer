@@ -17,8 +17,9 @@
         // Load and run all tests (.html, .js):
         WCT.loadSuites([
           'basic.html',
-          'filtering.html',
-          'exploding.html'
+          'filtering.html', // filter non-tiles
+        //   'scoping.html', // build elements ids according to juicy-tile-group element
+          'grouping.html' // build shadow DOM containers for groups
         ]);
     </script>
 </body>
