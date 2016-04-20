@@ -23,26 +23,137 @@
             </juicy-composer>
         </template>
     </test-fixture>
+    <test-fixture id="grouped">
+        <template>
+            <juicy-composer setup='{"tagName": "juicy-tile-table", "items":[
+                {
+                    "tagName": "my-element",
+                    "id": "groupId",
+                    "items": [
+                        {
+                            "id": 1
+                        },{
+                            "id": 3
+                        },{
+                            "tagName": "nested-element",
+                            "id": "nestedGroupId",
+                            "items":[
+                                {"id": 4},
+                                {"id": 6}
+                            ]
+                        }
+                    ]
+                },{
+                    "tagName": null,
+                    "id": "virtualGroupId",
+                    "items":[
+                        {"id": 0}
+                    ]
+                },{
+                    "id": 2
+                }
+            ] }'>
+                <div>0</div>
+                <div>1</div>
+                <div>2</div>
+                <div>3</div>
+                <div>4</div>
+                <div>5</div>
+            </juicy-composer>
+        </template>
+    </test-fixture>
 </body>
 <script>
     var juicyElement;
     describe('juicy-composer', function() {
+        describe('with setup without anything in items array', function(){
+            beforeEach(function() {
+                juicyElement = fixture('element');
+            });
+            it('should distribute its child nodes into shadow DOM within the HTML Element given by `tagName` in setup', function(){
+                expect(juicyElement.shadowRoot.querySelector('juicy-tile-table')).to.be.not.null;
+                // In shimmed IE it's shimm object, not an HTMLElement
+                // expect(juicyTileList).to.be.an.instanceOf(HTMLElement);
+                var shadowElement = juicyElement.shadowRoot.querySelector('juicy-tile-table');
 
-        beforeEach(function() {
-            juicyElement = fixture('element');
+                expect(shadowElement.children.length).to.be.equal(juicyElement.children.length)
+                // shimmed slot
+                for(var childNo = 0, len = shadowElement.children.length; childNo < len; childNo++){
+                    expect(shadowElement.querySelectorAll('content')[childNo].getDistributedNodes().length).to.be.equal(1);
+                    expect(shadowElement.querySelectorAll('content')[childNo].getDistributedNodes()[0]).to.be.equal(juicyElement.children[childNo]);
+                }
+            });
         });
-        it('should distribute its child nodes into shadow DOM within the HTML Element given by `tagName` in setup', function(){
-            expect(juicyElement.shadowRoot.querySelector('juicy-tile-table')).to.be.not.null;
-            // In shimmed IE it's shimm object, not an HTMLElement
-            // expect(juicyTileList).to.be.an.instanceOf(HTMLElement);
-            var shadowElement = juicyElement.shadowRoot.querySelector('juicy-tile-table');
+        describe('with setup item conatining `tagName` property, should distribute `juicy-composer`\'s child nodes into shadow DOM according to the setup', function(){
+            beforeEach(function() {
+                juicyElement = fixture('grouped');
+            });
+            it('each node with `tagName` (defined, != null) should be reflected by HTML Element in shadow tree', function(){
+                expect(juicyElement.shadowRoot.querySelector('juicy-tile-table')).to.be.not.null;
+                expect(juicyElement.shadowRoot.querySelector('my-element')).to.be.not.null;
+                expect(juicyElement.shadowRoot.querySelector('nested-element')).to.be.not.null;
+            });
+            it('each node with undefined `tagName` should be reflected by `content` tags distributing `juicy-composer` children given by `id` property', function(){
+                expect(juicyElement.shadowRoot.querySelectorAll('content[select]').length).to.be.above(4);
+                var nodeIds = [0,1,2,3,4];
+                nodeIds.forEach(function(id){
+                    expect(juicyElement.children[id].getDestinationInsertionPoints()[0]).to.be.ok;
+                    expect(juicyElement.children[id].getDestinationInsertionPoints()[0].tagName).to.equal('CONTENT');
+                    assert(juicyElement.shadowRoot.contains(juicyElement.children[id].getDestinationInsertionPoints()[0] ) );
+                });
+            });
+            it('even node with undefined `tagName` which does not have applicable child node (yet) should be reflected by `content` tags distributing eventual `juicy-composer` children given by `id` property', function(){
+                expect(juicyElement.shadowRoot.querySelector('content[select="[juicy-element=\'6\']"]')).to.be.not.null;
+            });
+            it('`juicy-composer` child node  which is not mentioned in setup, should be distributed within the HTML Element given by `tagName` in the root of setup', function(){
+                expect(juicyElement.children[5].getDestinationInsertionPoints()[0]).to.be.ok;
+                expect(juicyElement.children[5].getDestinationInsertionPoints()[0].tagName).to.equal('CONTENT');
+                assert(juicyElement.shadowRoot.querySelector('juicy-tile-table').contains(juicyElement.children[5].getDestinationInsertionPoints()[0] ) );
+            });
+            it('tree structure should be preserved - distributed/created HTML Elements should be descendants of HTML Elements reflecting parent nodes in setup (parent nodes with `tagName==null` are skipped in traversing - theris parent nodes are checked)', function(){
+                assert(juicyElement.shadowRoot.querySelector('juicy-tile-table').contains(juicyElement.shadowRoot.querySelector('my-element')));
+                // <my-element> group
+                assert(juicyElement.shadowRoot.querySelector('my-element').contains(juicyElement.children[1].getDestinationInsertionPoints()[0]));
+                assert(juicyElement.shadowRoot.querySelector('my-element').contains(juicyElement.children[3].getDestinationInsertionPoints()[0]));
+                assert(juicyElement.shadowRoot.querySelector('my-element').contains(juicyElement.shadowRoot.querySelector('nested-element')));
+                // <nested-element> subgroup
+                assert(juicyElement.shadowRoot.querySelector('nested-element').contains(juicyElement.children[4].getDestinationInsertionPoints()[0]));
+                // </nested-element>
+                // </my-element> group
+                // virtual group
+                assert(juicyElement.shadowRoot.querySelector('juicy-tile-table').contains(juicyElement.children[0].getDestinationInsertionPoints()[0]));
+                // end of virtual group
+                assert(juicyElement.shadowRoot.querySelector('juicy-tile-table').contains(juicyElement.children[2].getDestinationInsertionPoints()[0]));
+                // non specified children
+                assert(juicyElement.shadowRoot.querySelector('juicy-tile-table').contains(juicyElement.children[5].getDestinationInsertionPoints()[0]));
+            });
+            describe('when new nodes are appended', function(){
+                var appendedDiv6, appendedDiv7;
+                beforeEach(function(done) {
+                    var frag =  document.createDocumentFragment();
+                    appendedDiv6 = document.createElement('div');
+                    appendedDiv7 = document.createElement('div');
+                    appendedDiv6.innerHTML = '6';
+                    appendedDiv7.innerHTML = '7';
+                    frag.appendChild(appendedDiv6);
+                    frag.appendChild(appendedDiv7);
+                    juicyElement.appendChild(frag);
+                    // wait for mutation observer
+                    setTimeout(done,10);
+                });
+                it('nodes mentioned in setup tree, should be distributed into previously prepared slot', function(){
+                    expect(appendedDiv6.getDestinationInsertionPoints()[0]).to.be.ok;
+                    expect(appendedDiv6.getDestinationInsertionPoints()[0].tagName).to.equal('CONTENT');
+                    assert(juicyElement.shadowRoot.querySelector('nested-element').contains(appendedDiv6.getDestinationInsertionPoints()[0] ), 'nested shadow tree container, should contain insertion point for appended div 6' );
+                });
+                it('new nodes (didn\'t mentioned in setup), should be distributed within root container', function(){
+                    expect(appendedDiv7.getDestinationInsertionPoints()[0]).to.be.ok;
+                    expect(appendedDiv7.getDestinationInsertionPoints()[0].tagName).to.equal('CONTENT');
+                    assert(juicyElement.shadowRoot.querySelector('juicy-tile-table').contains(appendedDiv7.getDestinationInsertionPoints()[0] ), 'shadow tree root container, should contain insertion point for appended div 7' );
+                    assert(juicyElement.shadowRoot.querySelector('my-element').contains(appendedDiv7.getDestinationInsertionPoints()[0]) === false, 'insertion point for appended div 7, should not be nested' );
+                });
 
-            expect(shadowElement.children.length).to.be.equal(juicyElement.children.length)
-            // shimmed slot
-            for(var childNo = 0, len = shadowElement.children.length; childNo < len; childNo++){
-                expect(shadowElement.querySelectorAll('content')[childNo].getDistributedNodes().length).to.be.equal(1);
-                expect(shadowElement.querySelectorAll('content')[childNo].getDistributedNodes()[0]).to.be.equal(juicyElement.children[childNo]);
-            }
+            });
         });
     });
 </script>

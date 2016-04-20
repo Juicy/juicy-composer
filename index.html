@@ -1,5 +1,6 @@
 <!doctype html>
 <html>
+
 <head>
 
     <meta charset="utf-8">
@@ -8,100 +9,217 @@
 
     <!-- Imports polyfill -->
     <script src="../webcomponentsjs/webcomponents.min.js"></script>
+    <script>
+        /* this script must run before Polymer is imported */
+        window.Polymer = {
+            dom: 'shadow',
+            lazyRegister: true
+        };
+    </script>
 
     <!-- Imports custom element -->
     <link rel="import" href="juicy-composer.html">
     <link rel="import" href="../juicy-tile-list/src/juicy-tile-list.html">
+
+    <base href="https://polygit.org/components/">
+    <base href="http://polygit.org/polymer+:master/juicy-*+juicy+:master/components/">
+    <script src="webcomponentsjs/webcomponents-lite.min.js"></script>
+    <link href="paper-toolbar/paper-toolbar.html" rel="import">
+    <link href="paper-card/paper-card.html" rel="import">
+    <link href="paper-item/paper-item.html" rel="import">
+    <link href="iron-icons/iron-icons.html" rel="import">
+    <link href="paper-icon-button/paper-icon-button.html" rel="import">
     <style>
-        body.markdown-body{
+        body.markdown-body {
             overflow: auto;
         }
-        juicy-composer > *{
-            background-color: lightpink;
+
+        .output {
+            margin: 2em auto;
+            padding: 1em;
+            position: relative;
+            background-color: rgb(238, 238, 238);
+            box-shadow: rgba(0, 0, 0, 0.137255) 0px 2px 2px 0px, rgba(0, 0, 0, 0.117647) 0px 1px 5px 0px, rgba(0, 0, 0, 0.2) 0px 3px 1px -2px;
         }
-        juicy-composer > div > *{
-            background-color: lightgreen;
+
+        #result {
+            max-width: 80%;
+        }
+
+        .codeGiven {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+        }
+
+        .JSONHTML {
+            align-items: flex-start;
         }
     </style>
+    <script>
+        (function() {
+            var MyFlexbox = Object.create(HTMLElement.prototype);
+            MyFlexbox.createdCallback = function() {
+                var shadowRoot = this.createShadowRoot();
+                shadowRoot.innerHTML = '<style>:host{display: flex; align-items: center; justify-content: space-around;margin: 1em 0;} ::content > * {margin: 0; flex: 1;} ::content > :nth-child(2) {flex: 9;}</style><content></content>';
+            }
+            document.registerElement('my-flexbox', {
+                prototype: MyFlexbox
+            });
+        }());
+    </script>
+
+    </script>
 </head>
-<body class="markdown-body">
 
-    <!-- Runs custom element -->
-    <juicy-composer element-name="juicy-tile-table" setup='{
-        "People/1": true
+<body>
+    <a href="https://github.com/Juicy/juicy-composer"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
+    <article class="markdown-body">
+        <h1>&lt;juicy-composer&gt;</h1>
+        <blockquote>
+            <p>Custom Element that distributes its children into Shadow DOM tree specified in JSON attribute</p>
+        </blockquote>
+        <section>
+            <p>Consider you received set of HTML Elements from different vendors, like:</p>
+            <div class="codeGiven">
+                <pre><code>&lt;span&gt;&lt;paper-icon-button src="//assets-cdn.github.com/images/modules/logos_page/Octocat.png"&gt;&lt;/paper-icon-button&gt; tomalec&lt;/span&gt;
+&lt;span&gt;Person details&lt;/span&gt;
+&lt;span&gt;Tomek&lt;/span&gt;
+&lt;span&gt;Wytrębowicz&lt;/span&gt;
+&lt;img src="http://www.gravatar.com/avatar/a733c006efdb183b5d46c62a6e4bff84?s=128" alt="Gravatar" /&gt;</code></pre>
+                <section class="output">
+                    <span><paper-icon-button src="//assets-cdn.github.com/images/modules/logos_page/Octocat.png"></paper-icon-button> tomalec</span>
+                    <span>Person details</span>
+                    <span>Tomek</span>
+                    <span>Wytrębowicz</span>
+                    <img src="http://www.gravatar.com/avatar/a733c006efdb183b5d46c62a6e4bff84?s=128" alt="Gravatar" />
+                </section>
+            </div>
+        </section>
+        <section>
+            <p>Kinda ugly, isn't it? Now, you would like to <strong>make it look better</strong>, but without changing their HTML structure and position, as they may interact with each other.</p>
+            <p>
+                Thanks to <code>juicy-composer</code> you can do so. Just provide a layout - Shadow DOM tree structure given in JSON via attribute. Then it will build regular HTML tree in Shadow DOM, and distribute your elements accordingly. For example
+                you can build something like this:
+            </p>
+        </section>
+        <section id="result" class="output">
+
+            <juicy-composer element-name="juicy-tile-table" setup='{
+        "tagName": "div",
+        "items": [{
+                "tagName": "paper-toolbar",
+                "items": [{
+                    "id": "1"
+                }]
+            },{
+                "tagName": "my-flexbox",
+                "items": [{
+                    "id": "4"
+                },{
+                    "tagName": "paper-card",
+                    "items": [{
+                        "tagName": "paper-item",
+                        "items": [{
+                            "id": "2"
+                        }]
+                    },{
+                        "tagName": "paper-item",
+                        "items": [{
+                            "id": "3"
+                        }]
+                    },{
+                        "tagName": "paper-item",
+                        "items": [{
+                            "id": "0"
+                        }]
+                    }]
+                }]
+            }
+
+        ]
     }'>
-    <juicy-tile-group name="People"></juicy-tile-group>
-    <!-- <link rel="import" href="/sys/puppet-redirect/puppet-redirect.html" /> -->
 
-        <!-- <template is="dom-bind"> -->
-            <div juicy-style="height: 200px; width: 50%; priority: 0.1;">
-                <h2>Person details</h2>
+                <span><paper-icon-button src="//assets-cdn.github.com/images/modules/logos_page/Octocat.png"></paper-icon-button> tomalec</span>
+                <span>Person details</span>
+                <span>Tomek</span>
+                <span>Wytrębowicz</span>
+                <img src="http://www.gravatar.com/avatar/a733c006efdb183b5d46c62a6e4bff84?s=128" alt="Gravatar" />
+
+            </juicy-composer>
+        </section>
+        <section>
+            <div class="codeGiven JSONHTML">
+                <div>
+                    <h4>JSON</h4>
+                    <p>Put it into <code>setup</code> attribute... </p>
+                    <pre><code>{
+    "tagName": "div",
+    "items": [
+        {
+            "tagName": "paper-toolbar",
+            "items": [{"id": "1"}]
+        },{
+            "tagName": "my-flexbox",
+            "items": [
+                {"id": "4"},
+                {
+                    "tagName": "paper-card",
+                    "items": [
+                        {
+                            "tagName": "paper-item",
+                            "items": [{"id": "2"}]
+                        },{
+                            "tagName": "paper-item",
+                            "items": [{"id": "3"}]
+                        },{
+                            "tagName": "paper-item",
+                            "items": [{"id": "0"}]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}</code></pre></div>
+                <div>
+                    <h3>HTML</h3>
+                    <p>...to build such tree in shadow DOM</p><pre><code>&lt;div&gt;
+    &lt;paper-toolbar&gt;
+        &lt;span&gt;Person details&lt;/span&gt;
+    &lt;/paper-toolbar&gt;
+    &lt;my-flexbox&gt;
+        &lt;img src="http://www.gravatar.com/avatar/a733c006efdb183b5d46c62a6e4bff84?s=128" alt="Gravatar" /&gt;
+        &lt;paper-card&gt;
+            &lt;paper-item&gt;
+                &lt;span&gt;Tomek&lt;/span&gt;
+            &lt;/paper-item&gt;
+            &lt;paper-item&gt;
+                &lt;span&gt;Wytrębowicz&lt;/span&gt;
+            &lt;/paper-item&gt;
+            &lt;paper-item&gt;
+                &lt;span&gt;&lt;paper-icon-button src="//assets-cdn.github.com/images/modules/logos_page/Octocat.png"&gt;&lt;/paper-icon-button&gt; tomalec&lt;/span&gt;
+            &lt;/paper-item&gt;
+        &lt;/paper-card&gt;
+    &lt;/my-flexbox&gt;
+&lt;/div&gt;</code></pre>
+                </div>
             </div>
-            <div>
-                <label class="control-label">First name:</label>
-                <input type="text" value="{{model.FirstName$::change}}" placeholder="First name" class="form-control" />
-            </div>
-            <div class="form-horizontal">
-                <label class="control-label">Last name:</label>
-            </div>
-            <div>
-                <input type="text" value="{{model.LastName$::change}}" placeholder="Last name" class="form-control" />
-            </div>
-            <div class="addresses-label">>
-                    <label class="control-label">This person does not have addresses yet. Press <b>Add address</b> to add some.</label>
-            </div>
-            <div class="addresses">
-                repeat addresses
-                <template is="dom-repeat" items="{{model.Addresses}}">
-                    <starcounter-include partial="{{item}}"></starcounter-include>
-                </template>
-            </div>
-            <div>
-                <button type="button" class="btn btn-default btn-sm" onclick="++this.value;" value="{{model.AddAddress$::click}}">Add address</button>
-            </div>
-            <div>
-                <template is="dom-if" if="{{model.EmailAddresses.length}}">
-                    <label class="control-label">Emails:</label>
-                </template>
-                <template is="dom-if" if="{{!model.EmailAddresses.length}}">
-                    <label class="control-label">This person does not have email addresses yet. Press <b>Add email address</b> to add some.</label>
-                </template>
-            </div>
-            <div>
-                <template is="dom-repeat" items="{{model.EmailAddresses}}">
-                    <starcounter-include partial="{{item}}"></starcounter-include>
-                </template>
-            </div>
-            <div>
-                <button type="button" class="btn btn-default btn-sm" onclick="++this.value;" value="{{model.AddEmailAddress$::click}}">Add email address</button>
-            </div>
-            <div>
-                <template is="dom-if" if="{{model.PhoneNumbers.length}}">
-                    <label class="control-label">Phones:</label>
-                </template>
-                <template is="dom-if" if="{{!model.PhoneNumbers.length}}">
-                    <label class="control-label">This person does not have phone numbers yet. Press <b>Add phone number</b> to add some.</label>
-                </template>
-            </div>
-            <div>
-                <template is="dom-repeat" items="{{model.PhoneNumbers}}">
-                    <starcounter-include partial="{{item}}"></starcounter-include>
-                </template>
-            </div>
-            <div>
-                <button type="button" class="btn btn-default btn-sm" onclick="++this.value;" value="{{model.AddPhoneNumber$::click}}">Add phone number</button>
-            </div>
-            <div>
-                <button type="button" class="btn btn-primary" onclick="++this.value;" value="{{model.Save$::click}}">Save</button>
-            </div>
-            <div>
-                <button type="button" class="btn btn-default" onclick="++this.value;" value="{{model.Cancel$::click}}">Cancel</button>
-            </div>
-            <!-- <template is="imported-template" content="/People/viewmodels/ConfirmDialogPage.html">
-            </template> -->
-            <!-- <link is="puppet-redirect" history url="{{model.RedirectUrl$}}" /> -->
-        <!-- </template> -->
-    </juicy-composer>
+        </section>
+        <section>
+            <h2>Additional features</h2>
+            <ul>
+                <li>
+                    Prefixing elements, and setup ids from different vendors for easier layout managment
+                </li>
+                <li>
+                    Filtering non visual elements, like: <code>template, link, script, style</code>
+                </li>
+            </ul>
+        </section>
+
+    </article>
 
 </body>
+
 </html>
