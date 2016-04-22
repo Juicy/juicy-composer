@@ -105,8 +105,6 @@
     // Fires when an instance was inserted into the document
     JuicyElementPrototype.attachedCallback = function() {
         console.info('attached children.length', this.children.length);
-        // debugger
-        // this.distributeNodes();
     };
     /**
      * Handles mutations.
@@ -135,6 +133,7 @@
                 // debugger
                 decorateFilteredElements(element.elementsMap, nodesToDistribute, element.remainingDecorators, '', scopePrefix, scopedIndex);
                 // </V1 slot shim>
+                // TODO: remove it,  setup was not changed so there is no point in rebuilding shadow tree, we need to attach new doecorators only.
                 element.setup && element.setup.items && distributeJuicyElements(element.elementsMap, element.setup.items, element.shadowContainer);
                 // add remaining decorators
                 element.shadowContainer.appendChild( element.remainingDecorators );
@@ -205,6 +204,7 @@
                 // create shadow container
                 // recursion
                 sdContainer = document.createElement(item.tagName);
+                item.attributes && setAttributes(sdContainer, item.attributes);
                 distributeJuicyElements(elementsMap, item.items, sdContainer);
                 parent.appendChild(sdContainer);
             } else if (item.tagName === null && item.items){
@@ -220,6 +220,7 @@
                     elementsMap[id] = createSlot(id);
 
                 }
+                item.attributes && setAttributes(elementsMap[id], item.attributes);
                 parent.appendChild( elementsMap[id] );
             }
         }
@@ -325,6 +326,18 @@
             }
             // </V1 assignedSlot shim>
 
+        }
+    }
+    /**
+     * Sets attributes given in attrsMap (key-value map) to given element
+     * @param {HTMLElement} element
+     * @param {Object} attrsMap
+     */
+    function setAttributes(element, attrsMap){
+        for (var key in attrsMap){
+            if (attrsMap.hasOwnProperty(key)) {
+                 element.setAttribute(key, attrsMap[key]);
+            }
         }
     }
 

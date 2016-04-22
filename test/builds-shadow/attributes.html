@@ -1,0 +1,113 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../../../webcomponentsjs/webcomponents.js"></script>
+    <script src="../../../web-component-tester/browser.js"></script>
+
+    <link rel="import" href="../../juicy-composer.html">
+</head>
+
+<body>
+    <test-fixture id="element">
+        <template>
+            <juicy-composer setup='{"tagName": "juicy-tile-table", "items":[
+                {
+                    "tagName": "root-group",
+                    "attributes": {
+                        "group-attrName": "group-attrValue",
+                        "group-attrName2": "group-attrValue2"
+                    },
+                    "items": [
+                        {
+                            "id": 1,
+                            "attributes": {
+                                "nestedElement-attrName": "nestedElement-attrValue",
+                                "nestedElement-attrName2": "nestedElement-attrValue2"
+                            }
+                        },{
+                            "id": 3
+                        },{
+                            "tagName": "nested-group",
+                            "attributes": {
+                                "nestedGroup-attrName": "nestedGroup-attrValue",
+                                "nestedGroup-attrName2": "nestedGroup-attrValue2"
+                            },
+                            "items":[
+                                {"id": 4},
+                                {"id": 6}
+                            ]
+                        }
+                    ]
+                },{
+                    "tagName": null,
+                    "id": "virtualGroup",
+                    "attributes": {
+                        "virtualGroup-attrName": "virtualGroup-attrValue",
+                        "virtualGroup-attrName2": "virtualGroup-attrValue2"
+                    },
+                    "items":[
+                        {
+                            "id": 0,
+                            "attributes": {
+                                "element-attrName": "element-attrValue",
+                                "element-attrName2": "element-attrValue2"
+                            }
+                        }
+                    ]
+                },{
+                    "id": 2
+                }
+            ] }'>
+                <div>0</div>
+                <div>1</div>
+                <div>2</div>
+                <div>3</div>
+                <div>4</div>
+                <div>5</div>
+            </juicy-composer>
+        </template>
+    </test-fixture>
+</body>
+<script>
+    chai.Assertion.addChainableMethod('HTMLAttribute', function (str) {
+        var obj = chai.util.flag(this, 'object');
+        new chai.Assertion(obj).to.respondTo('getAttribute');
+        chai.util.flag(this, 'object', obj.getAttribute(str));
+    });
+
+
+    var juicyElement;
+    describe('juicy-composer', function() {
+        describe('with setup item conatining `attributes` property, should set HTML attributes as given in key-value map', function(){
+            beforeEach(function() {
+                juicyElement = fixture('element');
+            });
+            it('elements', function(){
+                expect(juicyElement.shadowRoot.getElementById('0')).to.have.HTMLAttribute('element-attrName').equal('element-attrValue');
+                expect(juicyElement.shadowRoot.getElementById('0')).to.have.HTMLAttribute('element-attrName2').equal('element-attrValue2');
+            });
+            it('nested elements', function(){
+                expect(juicyElement.shadowRoot.getElementById('1')).to.have.HTMLAttribute('nestedElement-attrName').equal('nestedElement-attrValue');
+                expect(juicyElement.shadowRoot.getElementById('1')).to.have.HTMLAttribute('nestedElement-attrName2').equal('nestedElement-attrValue2');
+            });
+            it('groups/containers', function(){
+                expect(juicyElement.shadowRoot.querySelector('root-group')).to.have.HTMLAttribute('group-attrName').equal('group-attrValue');
+                expect(juicyElement.shadowRoot.querySelector('root-group')).to.have.HTMLAttribute('group-attrName2').equal('group-attrValue2');
+            });
+            it('nested groups/containers', function(){
+                expect(juicyElement.shadowRoot.querySelector('nested-group')).to.have.HTMLAttribute('nestedGroup-attrName').equal('nestedGroup-attrValue');
+                expect(juicyElement.shadowRoot.querySelector('nested-group')).to.have.HTMLAttribute('nestedGroup-attrName2').equal('nestedGroup-attrValue2');
+            });
+            it('except virtual groups (`tagName == null`). Then `attributes` should be disregarded - no element should get it.', function(){
+                expect(juicyElement.shadowRoot.querySelector('[virtualGroup-attrName]')).to.be.null;
+                expect(juicyElement.shadowRoot.querySelector('[virtualGroup-attrName2]')).to.be.null;
+            });
+        });
+    });
+</script>
+
+</html>
