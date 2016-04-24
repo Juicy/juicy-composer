@@ -205,6 +205,7 @@
                 // recursion
                 sdContainer = document.createElement(item.tagName);
                 item.attributes && setAttributes(sdContainer, item.attributes);
+                item.properties && setProperties(sdContainer, item.properties);
                 distributeJuicyElements(elementsMap, item.items, sdContainer);
                 parent.appendChild(sdContainer);
             } else if (item.tagName === null && item.items){
@@ -221,6 +222,7 @@
 
                 }
                 item.attributes && setAttributes(elementsMap[id], item.attributes);
+                item.properties && setProperties(elementsMap[id], item.properties);
                 parent.appendChild( elementsMap[id] );
             }
         }
@@ -337,6 +339,18 @@
         for (var key in attrsMap){
             if (attrsMap.hasOwnProperty(key)) {
                  element.setAttribute(key, attrsMap[key]);
+            }
+        }
+    }
+    /**
+     * Sets properties given in propsMap (key-value map) to given element
+     * @param {HTMLElement} element
+     * @param {Object} propsMap
+     */
+    function setProperties(element, propsMap){
+        for (var key in propsMap){
+            if (propsMap.hasOwnProperty(key)) {
+                 element[key] = propsMap[key];
             }
         }
     }

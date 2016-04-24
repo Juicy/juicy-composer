@@ -1,0 +1,99 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../../../webcomponentsjs/webcomponents.js"></script>
+    <script src="../../../web-component-tester/browser.js"></script>
+
+    <link rel="import" href="../../juicy-composer.html">
+</head>
+
+<body>
+    <test-fixture id="element">
+        <template>
+            <juicy-composer setup='{"tagName": "juicy-tile-table", "items":[
+                {
+                    "tagName": "root-group",
+                    "properties": {
+                        "group-propName": "group-propValue",
+                        "group-propName2": "group-propValue2"
+                    },
+                    "items": [
+                        {
+                            "id": 1,
+                            "properties": {
+                                "nestedElement-propName": "nestedElement-propValue",
+                                "nestedElement-propName2": "nestedElement-propValue2"
+                            }
+                        },{
+                            "id": 3
+                        },{
+                            "tagName": "nested-group",
+                            "properties": {
+                                "nestedGroup-propName": "nestedGroup-propValue",
+                                "nestedGroup-propName2": "nestedGroup-propValue2"
+                            },
+                            "items":[
+                                {"id": 4},
+                                {"id": 6}
+                            ]
+                        }
+                    ]
+                },{
+                    "tagName": null,
+                    "id": "virtualGroup",
+                    "items":[
+                        {
+                            "id": 0,
+                            "properties": {
+                                "element-propName": "element-propValue",
+                                "element-propName2": "element-propValue2"
+                            }
+                        }
+                    ]
+                },{
+                    "id": 2
+                }
+            ] }'>
+                <div>0</div>
+                <div>1</div>
+                <div>2</div>
+                <div>3</div>
+                <div>4</div>
+                <div>5</div>
+            </juicy-composer>
+        </template>
+    </test-fixture>
+</body>
+<script>
+
+    var juicyElement;
+    describe('juicy-composer', function() {
+        describe('with setup item conatining `properties` property, should set properties of related HTML Element as given in key-value map', function(){
+            beforeEach(function() {
+                juicyElement = fixture('element');
+            });
+            it('elements', function(){
+                expect(juicyElement.shadowRoot.getElementById('0')).to.have.property('element-propName', 'element-propValue');
+                expect(juicyElement.shadowRoot.getElementById('0')).to.have.property('element-propName2', 'element-propValue2');
+            });
+            it('nested elements', function(){
+                expect(juicyElement.shadowRoot.getElementById('1')).to.have.property('nestedElement-propName', 'nestedElement-propValue');
+                expect(juicyElement.shadowRoot.getElementById('1')).to.have.property('nestedElement-propName2', 'nestedElement-propValue2');
+            });
+            it('groups/containers', function(){
+                expect(juicyElement.shadowRoot.querySelector('root-group')).to.have.property('group-propName', 'group-propValue');
+                expect(juicyElement.shadowRoot.querySelector('root-group')).to.have.property('group-propName2', 'group-propValue2');
+            });
+            it('nested groups/containers', function(){
+                expect(juicyElement.shadowRoot.querySelector('nested-group')).to.have.property('nestedGroup-propName', 'nestedGroup-propValue');
+                expect(juicyElement.shadowRoot.querySelector('nested-group')).to.have.property('nestedGroup-propName2', 'nestedGroup-propValue2');
+            });
+        });
+    });
+</script>
+
+</html>
