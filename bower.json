@@ -15,7 +15,9 @@
     "test",
     "preview.png",
     "package.json",
-    "Gruntfile.json"
+    "Gruntfile.json",
+    "examples",
+    "wct.conf.json"
   ],
   "dependencies": {
     "webcomponentsjs": "^0.7.2"
