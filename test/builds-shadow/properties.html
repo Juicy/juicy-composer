@@ -14,9 +14,14 @@
 <body>
     <test-fixture id="element">
         <template>
-            <juicy-composer setup='{"tagName": "juicy-tile-table", "items":[
-                {
-                    "tagName": "root-group",
+            <juicy-composer setup='{
+                "tagName": "root-container",
+                "properties": {
+                    "root-attrName": "root-attrValue",
+                    "root-attrName2": "root-attrValue2"
+                },
+                "items":[{
+                    "tagName": "a-group",
                     "properties": {
                         "group-propName": "group-propValue",
                         "group-propName2": "group-propValue2"
@@ -84,9 +89,13 @@
                 expect(juicyElement.shadowRoot.getElementById('1')).to.have.property('nestedElement-propName', 'nestedElement-propValue');
                 expect(juicyElement.shadowRoot.getElementById('1')).to.have.property('nestedElement-propName2', 'nestedElement-propValue2');
             });
+            it('root container', function(){
+                expect(juicyElement.shadowRoot.querySelector('root-container')).to.have.property('root-attrName', 'root-attrValue');
+                expect(juicyElement.shadowRoot.querySelector('root-container')).to.have.property('root-attrName2', 'root-attrValue2');
+            });
             it('groups/containers', function(){
-                expect(juicyElement.shadowRoot.querySelector('root-group')).to.have.property('group-propName', 'group-propValue');
-                expect(juicyElement.shadowRoot.querySelector('root-group')).to.have.property('group-propName2', 'group-propValue2');
+                expect(juicyElement.shadowRoot.querySelector('a-group')).to.have.property('group-propName', 'group-propValue');
+                expect(juicyElement.shadowRoot.querySelector('a-group')).to.have.property('group-propName2', 'group-propValue2');
             });
             it('nested groups/containers', function(){
                 expect(juicyElement.shadowRoot.querySelector('nested-group')).to.have.property('nestedGroup-propName', 'nestedGroup-propValue');

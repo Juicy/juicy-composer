@@ -14,9 +14,14 @@
 <body>
     <test-fixture id="element">
         <template>
-            <juicy-composer setup='{"tagName": "juicy-tile-table", "items":[
-                {
-                    "tagName": "root-group",
+            <juicy-composer setup='{
+                "tagName": "root-container",
+                "attributes": {
+                    "root-attrName": "root-attrValue",
+                    "root-attrName2": "root-attrValue2"
+                },
+                "items":[{
+                    "tagName": "a-group",
                     "attributes": {
                         "group-attrName": "group-attrValue",
                         "group-attrName2": "group-attrValue2"
@@ -94,9 +99,13 @@
                 expect(juicyElement.shadowRoot.getElementById('1')).to.have.HTMLAttribute('nestedElement-attrName').equal('nestedElement-attrValue');
                 expect(juicyElement.shadowRoot.getElementById('1')).to.have.HTMLAttribute('nestedElement-attrName2').equal('nestedElement-attrValue2');
             });
+            it('root container', function(){
+                expect(juicyElement.shadowRoot.querySelector('root-container')).to.have.HTMLAttribute('root-attrName').equal('root-attrValue');
+                expect(juicyElement.shadowRoot.querySelector('root-container')).to.have.HTMLAttribute('root-attrName2').equal('root-attrValue2');
+            });
             it('groups/containers', function(){
-                expect(juicyElement.shadowRoot.querySelector('root-group')).to.have.HTMLAttribute('group-attrName').equal('group-attrValue');
-                expect(juicyElement.shadowRoot.querySelector('root-group')).to.have.HTMLAttribute('group-attrName2').equal('group-attrValue2');
+                expect(juicyElement.shadowRoot.querySelector('a-group')).to.have.HTMLAttribute('group-attrName').equal('group-attrValue');
+                expect(juicyElement.shadowRoot.querySelector('a-group')).to.have.HTMLAttribute('group-attrName2').equal('group-attrValue2');
             });
             it('nested groups/containers', function(){
                 expect(juicyElement.shadowRoot.querySelector('nested-group')).to.have.HTMLAttribute('nestedGroup-attrName').equal('nestedGroup-attrValue');

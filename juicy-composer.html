@@ -80,7 +80,10 @@
     JuicyElementPrototype.stamp = function(){
         var template = document.importNode(templ, true);
         this.shadowContainer = document.createElement(this.setup.tagName || this.defaultTagName);
-        //
+        // sett attrs and props
+        this.setup.attributes && setAttributes(this.shadowContainer, this.setup.attributes);
+        this.setup.properties && setProperties(this.shadowContainer, this.setup.properties);
+
         template.insertBefore(this.shadowContainer, template.firstChild);
         var shadowRoot = this.createShadowRoot();
         // var shadowRoot = this.attachShadow({mode: "open"});
