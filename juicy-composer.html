@@ -276,6 +276,8 @@
             child._juicyElementId = id;
             // child._juicyAssignedShadowElement = tile;
             // </V1 assignedSlot shim>
+            // forward juicy-style attribute
+            tile.setAttribute('juicy-style', child.getAttribute('juicy-style'));
             fragment.appendChild(tile);
             // </V1 slot shim>
             // attach a selectable key to each light-dom node
