@@ -35,6 +35,7 @@
         describe('with no setup given', function () {
             beforeEach(function () {
                 juicyElement = fixture('no-setup');
+                juicyElement.stamp();
             });
             it('once setup attribute is set, should set its property as well, as applicable JSON', function () {
                 juicyElement.setAttribute('setup', '{"tagName": "smth-new"}');
@@ -44,6 +45,7 @@
         describe('with setup property given', function () {
             beforeEach(function (done) {
                 juicyElement = fixture('no-setup');
+                juicyElement.stamp();
                 juicyElement.setup = {"tagName": "smth"};
                 setTimeout(done);
             });
@@ -55,6 +57,7 @@
         describe('with setup attribute given', function () {
             beforeEach(function () {
                 juicyElement = fixture('with-setup');
+                juicyElement.stamp();
             });
             it('once setup attribute is set, should set its property as well, as applicable JSON', function () {
                 juicyElement.setAttribute('setup', '{"tagName": "smth-new"}');

@@ -14,14 +14,14 @@
 <body>
     <test-fixture id="no-setup">
         <template>
-            <juicy-composer>
+            <juicy-composer auto-stamp>
                 <div>0</div>
             </juicy-composer>
         </template>
     </test-fixture>
     <test-fixture id="with-setup">
         <template>
-            <juicy-composer setup='{"tagName": "smth"}'>
+            <juicy-composer auto-stamp setup='{"tagName": "smth"}'>
                 <div>0</div>
             </juicy-composer>
         </template>
@@ -30,11 +30,12 @@
 <script>
 
     var juicyElement;
-    describe('juicy-composer', function () {
+    describe('juicy-composer with `auto-stamp` and', function () {
         var stamp;
         describe('with no setup given', function () {
             beforeEach(function (done) {
                 juicyElement = fixture('no-setup');
+                juicyElement.stamp();
                 setTimeout(function () {
                     stamp = sinon.spy(juicyElement, 'stamp');
                     done();
@@ -55,6 +56,7 @@
                 juicyElement = fixture('no-setup');
                 oldSetup = {"tagName": "smth"}
                 juicyElement.setup = oldSetup;
+                juicyElement.stamp();
                 setTimeout(function () {
                     stamp = sinon.spy(juicyElement, 'stamp');
                     done();
@@ -72,6 +74,7 @@
         describe('with setup attribute given', function () {
             beforeEach(function (done) {
                 juicyElement = fixture('with-setup');
+                juicyElement.stamp();
                 setTimeout(function () {
                     stamp = sinon.spy(juicyElement, 'stamp');
                     done();

@@ -80,6 +80,7 @@
         describe('with setup item conatining `properties` property, should set properties of related HTML Element as given in key-value map', function(){
             beforeEach(function() {
                 juicyElement = fixture('element');
+                juicyElement.stamp();
             });
             it('elements', function(){
                 expect(juicyElement.shadowRoot.getElementById('0')).to.have.property('element-propName', 'element-propValue');

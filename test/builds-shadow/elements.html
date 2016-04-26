@@ -69,6 +69,7 @@
         describe('with setup without anything in items array', function(){
             beforeEach(function() {
                 juicyElement = fixture('element');
+                juicyElement.stamp();
             });
             it('should distribute its child nodes into shadow DOM within the HTML Element given by `tagName` in setup', function(){
                 expect(juicyElement.shadowRoot.querySelector('juicy-tile-table')).to.be.not.null;
@@ -87,6 +88,7 @@
         describe('with setup item conatining `tagName` property, should distribute `juicy-composer`\'s child nodes into shadow DOM according to the setup', function(){
             beforeEach(function() {
                 juicyElement = fixture('grouped');
+                juicyElement.stamp();
             });
             it('each node with `tagName` (defined, != null) should be reflected by HTML Element in shadow tree', function(){
                 expect(juicyElement.shadowRoot.querySelector('juicy-tile-table')).to.be.not.null;

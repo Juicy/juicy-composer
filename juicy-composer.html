@@ -47,6 +47,11 @@
     */
     JuicyElementPrototype.setup = null;
     /**
+    * Should element stamp it's shadow dom on created and every setup change?
+    * @type {Boolean}
+    */
+    JuicyElementPrototype.autoStamp = false;
+    /**
      * Creates a juicy-composer, runs #stamp method, and attaches mutation observer.
      */
     JuicyElementPrototype.createdCallback = function() {
@@ -54,12 +59,13 @@
             setup;
         this.attributeChangedCallback('setup', this.setup, this.getAttribute('setup'));
         setup = this.setup;
+        this.autoStamp = this.hasAttribute('auto-stamp');
         Object.defineProperty(this, 'setup', {
             get: function(){
                 return setup;
             },
             set: function(newVal){
-                if(newVal !== setup){
+                if(this.autoStamp && newVal !== setup){
                     setup = newVal;
                     this.stamp();
                 }
@@ -69,7 +75,7 @@
         this.elementsMap = {};
         this.remainingDecorators = document.createDocumentFragment();
 
-        this.stamp();
+        this.autoStamp && this.stamp();
 
 
         this.observer = new MutationObserver(function (mutations) {
@@ -182,6 +188,9 @@
                 this.defaultTagName = newVal;
                 this.createdCallback();
                 // TODO: replace nested structure
+                break;
+            case "auto-stamp":
+                this.autoStamp = !!newVal;
                 break;
             case 'setup':
                 if (newVal && typeof newVal === "string") {

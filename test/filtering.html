@@ -31,6 +31,7 @@
 
         beforeEach(function() {
             juicyElement = fixture('element');
+            juicyElement.stamp();
         });
         it('should filter (distribute on root level, NOT into `juicy-tile-list`): templates, text nodes, scripts, links, styles, comments', function(){
                 var firstChild = juicyElement.querySelector('#template');

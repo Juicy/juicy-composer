@@ -33,7 +33,7 @@ Or [download as ZIP](https://github.com/Juicy/juicy-composer/archive/master.zip)
 3. Start using it!
 
     ```html
-    <juicy-composer setup='{
+    <juicy-composer auto-stamp setup='{
         "tagName": "my-element",
         "items": [{
             "id":"group",
@@ -59,11 +59,13 @@ Or [download as ZIP](https://github.com/Juicy/juicy-composer/archive/master.zip)
 Attribute     | Options     | Default      | Description
 ---           | ---         | ---          | ---
 `setup`       | *JSON*      | `{}`         | Setup to reflect shadow DOM structure. It's also a property.
+`auto-stamp`  | *Boolean*   | `false`      | Set to make it stamp Shadow DOM on created and every setup change. It's also a `autoStamp` property.
 
 ## Methods
 
 Method        | Parameters   | Returns     | Description
 ---           | ---          | ---         | ---
+`stamp`       |              |             | Call it to imperatively stamp shadow DOM tree. If `auto-stamp` attribute is set, it's done automatically, when element is created, or setup is changed.
 
 ## Events
 

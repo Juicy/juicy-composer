@@ -27,6 +27,7 @@
 
         beforeEach(function() {
             juicyElement = fixture('element');
+            juicyElement.stamp();
         });
 
         it('should distribute its children withinin shadow DOM into elements with class `.juicy-element` wrapped by `juicy-tile-list`', function() {

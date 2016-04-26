@@ -90,6 +90,7 @@
         describe('with setup item conatining `attributes` property, should set HTML attributes as given in key-value map', function(){
             beforeEach(function() {
                 juicyElement = fixture('element');
+                juicyElement.stamp();
             });
             it('elements', function(){
                 expect(juicyElement.shadowRoot.getElementById('0')).to.have.HTMLAttribute('element-attrName').equal('element-attrValue');

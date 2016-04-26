@@ -34,6 +34,7 @@
         describe('with child element that has `juicy-style` attribute', function(){
             beforeEach(function() {
                 juicyElement = fixture('element');
+                juicyElement.stamp();
             });
             it('should copy `juicy-style` attribute to shadow decorator', function(){
                 expect(juicyElement.shadowRoot.getElementById('1')).to.have.HTMLAttribute('juicy-style').equal('juicy-style content');
