@@ -130,7 +130,7 @@
 
     // Fires when an instance was inserted into the document
     JuicyElementPrototype.attachedCallback = function() {
-        console.info('attached children.length', this.children.length);
+        // console.info('attached children.length', this.children.length);
     };
     /**
      * Handles mutations.
@@ -152,7 +152,7 @@
                 var scopePrefix = previousElementSibling && previousElementSibling._juicyScopePrefix || '';
 
                 var nodesToDistribute = filterElements(mutation.addedNodes);
-                console.log('adding nodes to', element, 'prefixed by', scopePrefix, 'starting from index', scopedIndex);
+                // console.log('adding nodes to', element, 'prefixed by', scopePrefix, 'starting from index', scopedIndex);
 
                 // <V1 slot shim>
                 // adding it to a this.shadowContainer manually
