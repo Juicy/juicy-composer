@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../../../webcomponentsjs/webcomponents.js"></script>
+    <script src="../../../web-component-tester/browser.js"></script>
+
+    <link rel="import" href="../../juicy-composer.html">
+</head>
+
+<body>
+    <test-fixture id="no-setup">
+        <template>
+            <juicy-composer>
+                <div>0</div>
+            </juicy-composer>
+        </template>
+    </test-fixture>
+    <test-fixture id="with-setup">
+        <template>
+            <juicy-composer setup='{"tagName": "smth"}'>
+                <div>0</div>
+            </juicy-composer>
+        </template>
+    </test-fixture>
+</body>
+<script>
+
+    var juicyElement;
+    describe('juicy-composer', function () {
+        var stamp;
+        describe('with no setup given', function () {
+            beforeEach(function () {
+                juicyElement = fixture('no-setup');
+            });
+            it('once setup attribute is set, should set its property as well, as applicable JSON', function () {
+                juicyElement.setAttribute('setup', '{"tagName": "smth-new"}');
+                expect(juicyElement.setup).to.deep.eql({'tagName': 'smth-new'});
+            });
+        });
+        describe('with setup property given', function () {
+            beforeEach(function (done) {
+                juicyElement = fixture('no-setup');
+                juicyElement.setup = {"tagName": "smth"};
+                setTimeout(done);
+            });
+            it('once setup attribute is set, should set its property as well, as applicable JSON', function () {
+                juicyElement.setAttribute('setup', '{"tagName": "smth-new"}');
+                expect(juicyElement.setup).to.deep.eql({'tagName': 'smth-new'});
+            });
+        });
+        describe('with setup attribute given', function () {
+            beforeEach(function () {
+                juicyElement = fixture('with-setup');
+            });
+            it('once setup attribute is set, should set its property as well, as applicable JSON', function () {
+                juicyElement.setAttribute('setup', '{"tagName": "smth-new"}');
+                expect(juicyElement.setup).to.deep.eql({'tagName': 'smth-new'});
+            });
+        });
+    });
+</script>
+
+</html>

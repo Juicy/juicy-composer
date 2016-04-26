@@ -58,7 +58,7 @@ Or [download as ZIP](https://github.com/Juicy/juicy-composer/archive/master.zip)
 
 Attribute     | Options     | Default      | Description
 ---           | ---         | ---          | ---
-`setup`       | *JSON*      | `{}`         | Setup to reflect shadow DOM structure
+`setup`       | *JSON*      | `{}`         | Setup to reflect shadow DOM structure. It's also a property.
 
 ## Methods
 

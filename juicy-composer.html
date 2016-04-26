@@ -42,9 +42,7 @@
     // </V1 assignedSlot shim>
 
     /**
-    * Map of elements to explode - make its children also managable tiles.
-    * Key is the ID build in the composer way.
-    * Value is true | false
+    * Tree of shadow nodes
     * @type {Object}
     */
     JuicyElementPrototype.setup = null;
@@ -52,9 +50,22 @@
      * Creates a juicy-composer, runs #stamp method, and attaches mutation observer.
      */
     JuicyElementPrototype.createdCallback = function() {
-        var that = this;
-        console.info('created children.length', this.children.length);
+        var that = this,
+            setup;
         this.attributeChangedCallback('setup', this.setup, this.getAttribute('setup'));
+        setup = this.setup;
+        Object.defineProperty(this, 'setup', {
+            get: function(){
+                return setup;
+            },
+            set: function(newVal){
+                if(newVal !== setup){
+                    setup = newVal;
+                    this.stamp();
+                }
+                setup = newVal;
+            }
+        });
         this.elementsMap = {};
         this.remainingDecorators = document.createDocumentFragment();
 
@@ -78,11 +89,14 @@
      * @see distributeJuicyElements
      */
     JuicyElementPrototype.stamp = function(){
-        var template = document.importNode(templ, true);
-        this.shadowContainer = document.createElement(this.setup.tagName || this.defaultTagName);
+        var setup = this.setup,
+            template = document.importNode(templ, true);
+        this.shadowContainer = document.createElement(setup && setup.tagName || this.defaultTagName);
         // sett attrs and props
-        this.setup.attributes && setAttributes(this.shadowContainer, this.setup.attributes);
-        this.setup.properties && setProperties(this.shadowContainer, this.setup.properties);
+        if(setup){
+            setup.attributes && setAttributes(this.shadowContainer, setup.attributes);
+            setup.properties && setProperties(this.shadowContainer, setup.properties);
+        }
 
         template.insertBefore(this.shadowContainer, template.firstChild);
         var shadowRoot = this.createShadowRoot();
@@ -93,7 +107,7 @@
         decorateFilteredElements(this.elementsMap, filterElements(this.children), this.remainingDecorators, '');
         // </V1 slot shim>
         // build shadow tree
-        this.setup && this.setup.items && distributeJuicyElements(this.elementsMap, this.setup.items, this.shadowContainer);
+        setup && setup.items && distributeJuicyElements(this.elementsMap, setup.items, this.shadowContainer);
         // add remaining decorators
         this.shadowContainer.appendChild( this.remainingDecorators );
 
@@ -180,7 +194,6 @@
                 } else {
                     this.setup = newVal || {};
                 }
-                // TODO setter that updates?
                 break;
         }
     };
